@@ -80,7 +80,7 @@ def export_to_every_geographic_element(data_freq: MeteoFranceDataType, geographi
     gdf = to_lambert2_geodataframe(data_freq, df)
     chemin_save_plot = chemin_save_original.parent / "plots"
     # De manière générale, sauf nationale et bassin le masque doit être redécoupé.
-    is_bassin_clip_required = True
+    is_bassin_clip_required = False
     match geographic_scale:
         case GeographicScaleClip.NATIONAL:
             plot_geojson_from_lambert2(chemin_save_original, gdf)
@@ -89,6 +89,10 @@ def export_to_every_geographic_element(data_freq: MeteoFranceDataType, geographi
             is_bassin_clip_required = False
         case GeographicScaleClip.DEPARTEMENT_BASSIN | GeographicScaleClip.REGION_BASSIN:
             is_bassin_clip_required = True
+        case GeographicScaleClip.ECOREGION_HYDROLOGIQUE:
+            is_bassin_clip_required = False
+        case _:
+            raise NotImplementedError("L'échelle geographique n'est pas implémenté")
 
     element_list = get_geographic_list(geographic_scale)
     if "DATE_DATETIME" in gdf.columns:

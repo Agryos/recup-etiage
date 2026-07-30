@@ -480,7 +480,7 @@ def rasterize_geodataframe_geographiv_zone(
             mask_column_name = "code"
         case _:
             logger.error(f"Échelle géographique non prise en charge : {geographic_zone}")
-            raise ValueError(f"Échelle géographique non prise en charge : {geographic_zone}")
+            raise NotImplementedError(f"Échelle géographique non prise en charge : {geographic_zone}")
 
     # Charger le masque et filtrer selon le code de la zone
     geo_mask = gpd.read_file(mask_file_path).to_crs(2154)
