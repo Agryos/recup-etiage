@@ -12,3 +12,4 @@ numpy
 scipy
 rasterio
 dotenv
+pynsee

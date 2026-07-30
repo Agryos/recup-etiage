@@ -50,12 +50,12 @@ def get_df_observations_data(geographic_scale:GeographicScaleClip, zone_code:str
     return df_observations
 
 @cache
-def get_df_campagnes_data() -> pd.DataFrame:
+def get_df_campagnes_data(zone_geographic:GeographicScaleClip, code_zone:str) -> pd.DataFrame:
     """
     Récupère les modalités des campagnes de toute la France depuis 2012 jusqu'à aujourd'hui.
     :return: Un DataFrame contenant toutes les campagnes Onde.
     """
-    df_campagnes = download_Hubeau.download_hubeau_onde_campagnes()
+    df_campagnes = download_Hubeau.download_hubeau_onde_campagnes(zone_geographic, code_zone)
     # On ne garde quie les colonnes utiles et on enlève les doublons. Les campgnes osnt enregistré pour chaque départements.
     # On a besoin uniquement des modalités, donc on ne garde qu'un seul code.
     df_campagne_reduit = df_campagnes[["code_campagne", "date_campagne", "nombre_modalite_ecoulement",
@@ -151,7 +151,7 @@ def load_and_prepare_onde_data(onde_campagne_type:OndeCampagneType, annee_mois:d
     # Récupérations des observations
     df_observations = get_df_observations_data(geographic_scale, zone_code).copy()
 
-    df_campagnes = get_df_campagnes_data().copy()
+    df_campagnes = get_df_campagnes_data(geographic_scale, zone_code).copy()
 
     # Les observations jointes aux campagnes.
     df_observation_join_campagne = df_observations.merge(df_campagnes, on="code_campagne", how="left")

@@ -11,6 +11,7 @@ from src.model.enums import GeographicScaleClip
 from functools import cache
 import src.config.init_project
 from src.config.logging_config import setup_logger
+from src.io.pynsee_departement import get_departements_from_regions
 
 # Initialiser le logger
 logger = setup_logger(name="download_Hubeau")
@@ -141,14 +142,20 @@ def download_hubeau_1991_2020(grandeur_souhaite):
         ensure_grandeur_historique_downloaded("QmnJ")
 
 @cache
-def download_hubeau_onde_campagnes() -> pd.DataFrame:
+def download_hubeau_onde_campagnes(zone_geographic:GeographicScaleClip, code_zone:str) -> pd.DataFrame:
     """
     Télécharge les observations de 1991 à 2020 de la grandeur souhaite et de toute la france
     :param grandeur_souhaite: La grandeur souhaité à télécharger parmis : HIXM, HIXnJ, QINM, QINnJ, QixM, QIXnJ, QmM ou QmnJ.
     """
     logger.info("Téléchargement des données des campagnes ONDE")
     utils_proxy.set_up_working_proxy()
-    gdf = watercourses_flow.get_all_campaigns()
+    match zone_geographic:
+        case GeographicScaleClip.DEPARTEMENT_BASSIN | GeographicScaleClip.DEPARTEMENT_ADMINISTRATIF:
+            gdf = watercourses_flow.get_all_campaigns(code_departement=[code_zone])
+        case GeographicScaleClip.REGION_BASSIN | GeographicScaleClip.REGION_ADMINISTRATIVE:
+            gdf = watercourses_flow.get_all_campaigns(code_departement=get_departements_from_regions(code_zone))
+        case _:
+            gdf = watercourses_flow.get_all_campaigns()
     chemin_campagne_onde = utils.get_path_campagne_onde()
     gdf["date_campagne"] = pd.to_datetime(gdf["date_campagne"])
     gdf.to_csv(chemin_campagne_onde, index=False)
