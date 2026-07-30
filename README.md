@@ -93,10 +93,22 @@ Vous devriez voir s'afficher un message d'aide avec toutes les options disponibl
 Pour mettre à jour les script, vous pouvez utiliser git ou passer par GitHub :
 ### Git
 1. Installer git sur votre ordinateur (avec git bash lors de l'installation)
-2. Clic droit dans le dossier du projet sans rien sélectionner
-3. Sélectionnez git bash
-4. **Si vous êtes sur le réseau interne :** Copiez le contenu de votre `.env` et collez le dans le terminal.
-5. Faites la commande `git pull`
+2. **Si vous êtes sur le réseau interne :** 
+   1. Copiez le contenu de votre `.env` dans le fichier `scripts/mise_a_jour.sh` ainsi
+   2. Exemple : 
+      
+      .env : 
+      ```
+      HTTP_PROXY="http://mon-super-proxy.fr:port"
+      HTTPS_PROXY="http://mon-super-proxy.fr:port"
+      ```
+      On rajoute `export` devant chaque ligne : 
+      ```
+      export HTTP_PROXY="http://mon-super-proxy.fr:port"
+      export HTTPS_PROXY="http://mon-super-proxy.fr:port"
+      ```
+3. Double-cliquez sur le fichier `scripts/mise_a_jour.bat`
+4. Lorsque les nouveaux commits s'affichent, vous pouvez utiliser les flèches pour vous déplacer et q pour sortir.
 
 ### GitHub
 1. Allez sur [la page GitHub du dépot](https://github.com/Agryos/recup-etiage).
