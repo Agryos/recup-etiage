@@ -453,7 +453,7 @@ def rasterize_geodataframe_geographiv_zone(
     # Pour REGION_BASSIN et DEPARTEMENT_BASSIN, on a besoin de clipper à la fois
     # par la zone géographique ET par le bassin
     is_bassin_clip_required = False
-
+    # On met la colonne contenant les codes d'identification des zones geographiques et le chemin vers le fichier.
     match geographic_zone:
         case GeographicScaleClip.BASSIN:
             mask_file_path = OUTPUT_DIR / "meteoFrance/downloaded_data/delimitation_qgis/BassinHydrographique_FXX.geojson"
