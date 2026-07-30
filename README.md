@@ -23,7 +23,6 @@ n
 ## 🔧 Prérequis
 
 Pour utiliser ce programme, vous avez besoin de :
-- Un ordinateur sous **Windows** (le programme a été testé sur Windows)
 - **Python 3.11 ou supérieur** installé
 - Une connexion internet (pour télécharger les données et les paquets nécessaires)
 
@@ -76,7 +75,7 @@ Tapez cette commande pour installer tous les outils dont le programme a besoin :
 
 > ⚠️ **Attention** : Cette étape peut prendre plusieurs minutes et nécessite une connexion internet **hors du réseau interne** de votre organisation.
 
-> ⚠️ **Attention** : En cas de problème lors de l'installation des paquets, cela peut-être du à la longueur des chemins maximum Windows étant dépassé, essayez de rapprocher les scripts de la racine de l'ordinateur. (plus proche du disque pur)
+> ⚠️ **Attention** : En cas de problème lors de l'installation des paquets, cela peut-être du à la longueur des chemins maximum Windows étant dépassé, essayez de rapprocher les scripts de la racine de l'ordinateur. (plus proche du disque dur ou mettez le dossier directement dans Documents)
 
 ### 5. Vérifier que tout est installé correctement
 
