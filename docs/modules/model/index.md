@@ -1,4 +1,4 @@
----
+from model.enums import GeographicScaleClipfrom model.enums import GeographicScaleClipfrom model.enums import GeographicScaleClip---
 layout: default
 title: Module Model
 description: "Documentation du module model - Énumérations et types de données"
@@ -127,6 +127,69 @@ export_all_format_geojson_range(
 | `OndeCampagneType` | USUELLE, COMPLEMENTAIRE, ALL_CAMPAGNE | Types de campagnes ONDE | `plotting.plot_onde`, `processing.process_onde` |
 | `MeteoFranceDataType` | SIM2_QUOT, SIM2_MENS, QUOT, MENS | Types de données météo | `plotting.plot_meteoFrance`, `io.download_meteoFrance` |
 | `GeographicScaleClip` | NATIONAL, BASSIN, REGION_ADMINISTRATIVE, DEPARTEMENT_ADMINISTRATIF, REGION_BASSIN, DEPARTEMENT_BASSIN | Échelles géographiques | `plotting.plot_meteoFrance`, `plotting.rasterize` |
+
+---
+
+## Ajouter une échelle géographique
+Vous pouvez ajouter une échelle géographique pour travailler à un autre niveau :
+1. Ajouter une valeur à l'enum
+```python
+class GeographicScaleClip(StrEnum):
+    [...]
+    MA_NOUVELLE_VALEUR = "MA_NOUVELLE_VALEUR"
+```
+2. Ajoutez votre fichier de couche.
+
+Placez votre fichier dans : `output/meteoFrance/downloaded_data/delimitation_qgis/`.
+
+Regardez le nom de la colonne contenant les codes de chaque régions.
+3. Ajouter l'entrée dans le main (interactif et CLI)
+Dans `setup_parser()` dans main_cli.py.
+```python
+parser.add_argument(
+    "--geographic_scale",
+    choices=[
+        GeographicScaleClip.NATIONAL,
+        GeographicScaleClip.BASSIN,
+        [...],
+        GeographicScaleClip.MA_NOUVELLE_VALEUR,
+```
+
+Dans main_interactive.py : Faites ctrl+f et cherchez 'geographic_scale' et ajoutez la valeur à chaque endroit manquant.
+```python
+geographic_scale_map = {
+    "1": GeographicScaleClip.NATIONAL,
+    "2": GeographicScaleClip.BASSIN,
+    [...],
+    "8": GeographicScaleClip.MA_NOUVELLE_VALEUR
+}
+
+[...]
+geographic_scale_map = {
+    "1": GeographicScaleClip.NATIONAL,
+    "2": GeographicScaleClip.BASSIN,
+    [...],
+    "8": GeographicScaleClip.MA_NOUVELLE_VALEUR
+}
+
+[...]
+
+match geographic_scale:
+    [...]
+    case MA_NOUVELLE_VALEUR:
+        logger.info("\nCodes géographiques utiles - MA_NOUVELLE_VALEUR :")
+            logger.info("  code_utile_example - Zone_utile_exemple - choix par défaut")
+            logger.info("  ...")
+            default_zone_code = "code_utile_example"
+```
+
+4. Complétez les erreurs NotImplementedError
+
+Lancez le script en utilisant votre zone géographique et complétez les erreurs associées.
+
+```bash
+.\venv\Scripts\python.exe .\main.py --type onde_ALL --start_date 2026-06-01 --onde_zone_code code_utile_example --geographic_scale MA_NOUVELLE_VALEUR
+```
 
 ---
 
