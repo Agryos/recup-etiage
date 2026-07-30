@@ -73,12 +73,12 @@ Ce programme permet de **récupérer, analyser et visualiser** des données sur 
 
 ## 📞 Support et Contribution
 
-- **Bug ou suggestion** : [Ouvrir une issue sur GitHub](https://github.com/Thomas-MESLIN/RecupeEthiage/issues)
-- **Code source** : [Dépôt GitHub](https://github.com/Thomas-MESLIN/RecupeEthiage)
+- **Bug ou suggestion** : [Ouvrir une issue sur GitHub](https://github.com/Agryos/recup-etiage/issues)
+- **Code source** : [Dépôt GitHub](https://github.com/Agryos/recup-etiage)
 
 ---
 
-*Documentation générée le {{ "now" | date: "%d %B %Y" }} | [Retour au dépôt](https://github.com/Thomas-MESLIN/RecupeEthiage)*
+*Documentation générée le {{ "now" | date: "%d %B %Y" }} | [Retour au dépôt](https://github.com/Agryos/recup-etiage)*
 
 
 

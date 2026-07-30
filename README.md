@@ -16,7 +16,7 @@ Avec cet outil, vous pouvez :
    - **SSWI** : Indice Standardisé d'Humidité des Sols
 - ✅ **Générer des cartes** au format GeoJSON, compatibles avec QGIS et autres logiciels SIG
 
-> **Info** : Documentation en ligne ici : https://thomas-meslin.github.io/RecupeEthiage.
+> **Info** : Documentation en ligne ici : https://github.com/Agryos/recup-etiage.
 
 ---
 n
@@ -40,10 +40,10 @@ Suivez ces étapes **dans l'ordre** :
 Deux options :
 - **Option A (recommandée si vous avez Git)** : Ouvrez l'invite de commandes et tapez :
   ```bash
-  git clone https://github.com/Thomas-MESLIN/RecupeEthiage.git
+  git clone https://github.com/Agryos/recup-etiage.git
   ```
 - **Option B (sans Git)** : 
-  1. Allez sur [la page GitHub](https://github.com/Thomas-MESLIN/RecupeEthiage)
+  1. Allez sur [la page GitHub](https://github.com/Agryos/recup-etiage)
   2. Cliquez sur le bouton vert **"Code"**
   3. Sélectionnez **"Download ZIP"**
   4. Extrayez le fichier ZIP dans un dossier de votre choix
@@ -87,6 +87,22 @@ Pour vérifier que l'installation a fonctionné, tapez :
 ```
 
 Vous devriez voir s'afficher un message d'aide avec toutes les options disponibles. Si c'est le cas, **bravo, l'installation est terminée !** 🎉
+
+---
+
+## Mise à jour
+Pour mettre à jour les script, vous pouvez utiliser git ou passer par GitHub :
+### Git
+1. Installer git sur votre ordinateur (avec git bash lors de l'installation)
+2. Clic droit dans le dossier du projet sans rien sélectionner
+3. Sélectionnez git bash
+4. **Si vous êtes sur le réseau interne :** Copiez le contenu de votre `.env` et collez le dans le terminal.
+5. Faites la commande `git pull`
+
+### GitHub
+1. Allez sur [la page GitHub du dépot](https://github.com/Agryos/recup-etiage).
+2. Cliquez sur code -> download zip
+3. Copiez le dossier sur le vôtre en remplaçant lorsqu'il y a des changements.
 
 ---
 
@@ -243,39 +259,18 @@ Le mode CLI (Command Line Interface) permet de lancer directement une commande a
 
 ### Utiliser vos propres listes de stations/sites
 
-Le programme permet d'utiliser vos propres listes de stations et sites hydrologiques :
+Le programme permet d'utiliser vos propres listes de stations et sites hydrologiques (rentrer **`custom`** quand on demande une liste SANDRE) :
 
 1. **`liste_site_custom.csv`** : Liste des sites que vous souhaitez surveiller
 2. **`liste_station_custom.csv`** : Liste des stations spécifiques
 
 **Comment faire ?**
-- Créez ces fichiers dans le dossier principal du programme **si vous souhaitez personnaliser les listes**. 
-- **Sinon, une liste par défaut est déjà disponible** et sera utilisée automatiquement.
-- Pour chaque site, le programme récupère automatiquement les stations correspondantes.
+- **Une liste par défaut est déjà disponible**.
+- Le programme complète automatiquement les listes et stations en fonction de ce qui est renseignée
 - Si un site a plusieurs stations et que vous voulez n'en garder qu'une, ajoutez-la dans `liste_station_custom.csv`.
 
 > ℹ️ Le fichier de sortie résumant les stations et sites utilisés sera généré dans : `output/site_station_custom/liste_site_et_station_custom.csv`
 
----
-
-### Codes géographiques utiles
-
-| Type | Code | Description |
-|------|------|-------------|
-| **Bassin** | `01` | Artois-Picardie |
-| **Bassin** | `02` | Meuse |
-| **Bassin** | `03` | Moselle |
-| **Bassin** | `04` | Rhin |
-| **Bassin** | `05` | Loire-Bretagne |
-| **Bassin** | `06` | Rhône-Méditerranée |
-| **Bassin** | `07` | Adour-Garonne |
-| **Bassin** | `08` | Garonne |
-| **Bassin** | `09` | Charente |
-| **Bassin** | `10` | Seine-Normandie |
-
-> 💡 Vous pouvez trouver tous les codes dans les fichiers générés dans `output/meteoFrance/downloaded_data/delimitation_qgis/*.geojson` (ouvrez-les avec un éditeur de texte et cherchez "CdBH" ou "code").
-
-> **Note** : Les codes pour les bassins sont des codes **Sandre**, tandis que les codes pour les départements et régions sont des codes **INSEE**.
 ---
 
 ## 📁 Où trouver les résultats ?
@@ -289,12 +284,12 @@ output/
 ├── QGIS/                    # Cartes générées
 │   ├── hydraulicite/        # Cartes d'hydraulicité
 │   ├── vcn3/                # Cartes de VCN3
-│   ├── meteo/               # Cartes météo
-│   └── onde/                # Cartes ONDE
+│   └── meteo/               # Cartes météo
+├── onde/                    # Cartes ONDE
 ├── meteoFrance/             # Données météo téléchargées
 │   └── downloaded_data/     # Données brutes
-├── site_station_custom/    # Listes personnalisées
-└── logs/                   # Journaux d'exécution (pour le dépannage)
+├── site_station_custom/     # Listes personnalisées
+└── logs/                    # Journaux d'exécution (pour le dépannage)
 ```
 
 ### Description des résultats
@@ -451,7 +446,7 @@ Le **SANDRE** (Service d'Administration Nationale des Données et Référentiels
 N'hésitez pas à :
 1. Vérifier que le problème persiste après avoir relancé le programme
 2. Consulter les logs dans le dossier `output/logs/`
-3. Rapporter le problème sur la page GitHub : [https://github.com/Thomas-MESLIN/RecupeEthiage](https://github.com/Thomas-MESLIN/RecupeEthiage)
+3. Rapporter le problème sur la page GitHub : [https://github.com/Agryos/recup-etiage](https://github.com/Agryos/recup-etiage)
 
 ---
 
@@ -469,4 +464,4 @@ N'hésitez pas à :
 ---
 
 ## Documentation en ligne
-Toute une documentation plus précise en ligne est disponible ici : https://thomas-meslin.github.io/RecupeEthiage.
+Toute une documentation plus précise en ligne est disponible ici : https://agryos.github.io/recup-etiage/.

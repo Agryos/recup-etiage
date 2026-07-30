@@ -30,7 +30,7 @@ def setup_parser():
     """
     parser = argparse.ArgumentParser(
         description="Exporter des données hydrologiques/météorologiques sous forme de cartes GeoJSON.",
-        epilog="Pour plus d'informations : https://github.com/Thomas-MESLIN/RecupeEthiage"
+        epilog="Pour plus d'informations : https://github.com/Agryos/recup-etiage"
     )
     
     # Argument principal : type de carte

@@ -358,7 +358,6 @@ def get_graphic_parameter(unit_to_get_graphic: str) -> tuple[str, bool, list[str
             [-50, -30, -20, -10, 0, 10, 20, 30, 50]
         )
     elif "hydraulicite" in unit_to_get_graphic:
-        ## TODO mettre les bonnes couleur
         return (
             "turbo",
             True,

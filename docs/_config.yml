@@ -6,12 +6,12 @@ name: "Documentation - Outil de Récupération et Visualisation de Données Hydr
 description: "Documentation complète pour l'outil de récupération, analyse et visualisation de données hydrologiques et météorologiques"
 
 # URL pour GitHub Pages (à adapter selon votre dépôt)
-url: "https://Thomas-MESLIN.github.io"
-baseurl: "/RecupeEthiage"
+url: "https://agryos.github.io"
+baseurl: "/recup-etiage"
 
 # Paramètres du site
 title: "Documentation Hydrologie-Météorologie"
-repository: "Thomas-MESLIN/RecupeEthiage"
+repository: "Agryos/recup-etiage"
 
 # Paramètres d'affichage
 logo: "/assets/images/logo.png"
@@ -31,7 +31,7 @@ minima:
   date_format: "%d %B %Y"
   skin: light
   social_links:
-    github: Thomas-MESLIN
+    github: Agryos
 
 # Pied de page
 footer_content: "Copyright &copy; 2026 Thomas Meslin. Distribué sous licence MIT."
@@ -61,7 +61,7 @@ plugins:
 seo:
   name: "Documentation Hydrologie-Météorologie"
   description: "Documentation complète pour l'outil de récupération, analyse et visualisation de données hydrologiques et météorologiques en France"
-  url: "https://Thomas-MESLIN.github.io/RecupeEthiage"
+  url: "https://github.com/Agryos/recup-etiage"
 
 # Exclusions
 exclude:

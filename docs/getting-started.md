@@ -37,12 +37,12 @@ Suivez ces étapes **dans l'ordre** :
 
 **Option A (recommandée si vous avez Git)** :
 ```powershell
-git clone https://github.com/Thomas-MESLIN/RecupeEthiage.git
-cd RecupeEthiage
+git clone https://github.com/Agryos/recup-etiage.git
+cd recup-etiage
 ```
 
 **Option B (sans Git)** :
-1. Allez sur [la page GitHub](https://github.com/Thomas-MESLIN/RecupeEthiage)
+1. Allez sur [la page GitHub](https://github.com/Agryos/recup-etiage)
 2. Cliquez sur le bouton vert **"Code"**
 3. Sélectionnez **"Download ZIP"**
 4. Extrayez le fichier ZIP dans un dossier de votre choix
