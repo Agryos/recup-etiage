@@ -290,9 +290,12 @@ def export_all_format_geojson_range(geo_scale:GeographicScaleClip, data_freq:Met
         has_index_update = False
 
     df_intervalle = MeteoNormale.df_range_processed(data_freq, start_date, end_date, is_data_aggregated, has_index_update, is_data_update_allowed)
-
-    df_rapport_normale = MeteoNormale.get_rapport_normale(data_freq, df_intervalle, start_date, end_date)
-
+    # Il y a trop de données dans les données quotidiennes pour qu'on puisse se permettre de les agréger en mémoire...
+    match data_freq:
+        case MeteoFranceDataType.MENS | MeteoFranceDataType.SIM2_MENS:
+            df_rapport_normale = MeteoNormale.get_rapport_normale(data_freq, df_intervalle, start_date, end_date)
+        case MeteoFranceDataType.QUOT | MeteoFranceDataType.SIM2_QUOT:
+            df_rapport_normale = df_intervalle
     chemin_sauvegarde = get_chemin_sauvegarde_meteofrance(data_freq, start_date, end_date, is_data_aggregated)
     chemin_sauvegarde.parent.mkdir(exist_ok=True)
 

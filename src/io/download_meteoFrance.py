@@ -189,6 +189,7 @@ def update_decennie_to_id_datagouv(freq_data:MeteoFranceDataType):
     :param freq_data: Le type de donnée qui est affecté.
     :return: Rien
     """
+    logger.info("Mise à jour de l'index.")
     old_df_decennie_to_id_datagouv = get_df_decennie_to_id_datagouv(freq_data)
     # Télécharger le nouveau
     fetch_and_update_decennie_ressource_id(freq_data)
@@ -252,7 +253,6 @@ def get_data_in_range(data_freq: MeteoFranceDataType, date_debut: datetime, date
 
     # On met à jour les correspondance decennie -> id_datagouv.
     if has_index_update:
-        logger.info("Mise à jour de l'index.")
         update_decennie_to_id_datagouv(data_freq)
 
     # On récupère les correspondance.
