@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# export HTTP_PROXY="http://mon-super-proxy.fr:port"
-# export HTTPS_PROXY="http://mon-super-proxy.fr:port"
+set -o allexport
+source ../.env
+set +o allexport
 
 echo "Modification locale mise de côté"
 git stash push
