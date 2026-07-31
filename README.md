@@ -19,11 +19,12 @@ Avec cet outil, vous pouvez :
 > **Info** : Documentation en ligne ici : https://github.com/Agryos/recup-etiage.
 
 ---
-n
+
 ## 🔧 Prérequis
 
 Pour utiliser ce programme, vous avez besoin de :
 - **Python 3.11 ou supérieur** installé
+- Git (git bash) installé
 - Une connexion internet (pour télécharger les données et les paquets nécessaires)
 
 > ⚠️ **Important** : Si vous êtes sur le réseau interne de votre organisation, vous devrez peut-être configurer un proxy (voir section dédiée plus bas).
@@ -47,43 +48,28 @@ Deux options :
   3. Sélectionnez **"Download ZIP"**
   4. Extrayez le fichier ZIP dans un dossier de votre choix
 
-### 2. Ouvrir le terminal dans le bon dossier
+### 2. Mettre en place le fichier .env (optionnel)
+Si vous êtes sur le réseau interne de votre organisation et que vous avez des restrictions d'accès internet, vous devez configurer un proxy.
 
-1. Ouvrez l'explorateur de fichiers et allez dans le dossier où vous avez téléchargé le programme
-2. **Cliquez droit** dans un espace vide du dossier (sans sélectionner de fichier)
-3. Sélectionnez **"Ouvrir dans le terminal"** ou **"Ouvrir PowerShell ici"**
+### Comment faire ?
 
-> 💡 Si vous ne voyez pas cette option, maintenez la touche **Maj (Shift)** enfoncée, faites un clic droit dans le dossier, puis choisissez **"Ouvrir une fenêtre PowerShell ici"**.
+1. Copiez le fichier `.env_example` et renommez-le en `.env`
+2. Ouvrez le fichier `.env` avec un éditeur de texte (comme le Bloc-notes)
+3. Remplacez les lignes par les informations de votre proxy :
 
-### 3. Créer l'environnement Python
+    ```
+    # Exemple de configuration proxy
+    HTTP_PROXY="http://votre-proxy.fr:8080"
+    HTTPS_PROXY="http://votre-proxy.fr:8080"
+    ```
 
-Dans le terminal qui s'est ouvert, tapez la commande suivante pour créer un "environnement virtuel" (un espace isolé pour installer les outils nécessaires) :
+4. Sauvegardez le fichier
 
-```bash
-py -3.11 -m venv venv
-```
+> ⚠️ **Important** : Le fichier `.env` ne doit pas être partagé publiquement (il contient des informations sensibles sur votre réseau).
 
-> ⚠️ Si vous avez plusieurs versions de Python, utilisez `python3-64.exe` à la place de `python`.
+### 3. Lancer le script install.bat
 
-### 4. Installer les paquets nécessaires
-
-Tapez cette commande pour installer tous les outils dont le programme a besoin :
-
-```bash
-.\venv\Scripts\pip.exe install -r .\requirements.txt
-```
-
-> ⚠️ **Attention** : Cette étape peut prendre plusieurs minutes et nécessite une connexion internet **hors du réseau interne** de votre organisation.
-
-> ⚠️ **Attention** : En cas de problème lors de l'installation des paquets, cela peut-être du à la longueur des chemins maximum Windows étant dépassé, essayez de rapprocher les scripts de la racine de l'ordinateur. (plus proche du disque dur ou mettez le dossier directement dans Documents)
-
-### 5. Vérifier que tout est installé correctement
-
-Pour vérifier que l'installation a fonctionné, tapez :
-
-```bash
-.\venv\Scripts\python.exe main.py -h
-```
+Double cliquez sur le script `install.bat`.
 
 Vous devriez voir s'afficher un message d'aide avec toutes les options disponibles. Si c'est le cas, **bravo, l'installation est terminée !** 🎉
 
@@ -166,6 +152,8 @@ Génération terminée.
 
 Le mode CLI (Command Line Interface) permet de lancer directement une commande avec tous les paramètres. C'est plus rapide une fois que vous maîtrisez les options.
 
+Un script d'exemple se situe dans `script/example_cli.bat`. Vous pouvez créer une copie et l'adapter librement.
+
 #### Structure de base :
 
 ```bash
@@ -190,6 +178,8 @@ Le mode CLI (Command Line Interface) permet de lancer directement une commande a
 > **Astuce** : Vous pouvez **interrompre une commande à tout moment** en appuyant sur **Ctrl+C** dans le terminal.
 
 #### 📌 Exemples concrets d'utilisation en CLI
+
+> **INFO** : Un fichier contenant un script d'exemple se situe dans `scripts/example_cli.bat`. Vous pouvez créer une copie et l'adapter librement.
 
 **Exemple 1 : Générer une carte d'hydraulicité pour janvier 2026**
 ```bash
@@ -317,28 +307,6 @@ Dans le dossier csv et geojson, on retrouve des fichiers se terminant par :
 
 
 Dans le dossier HISTORIC_DATA, vous retrouverez TOUTES les observations enrichies de leurs données de campagnes.
-
----
-
-## 🌐 Utiliser un Proxy (pour les réseaux internes)
-
-Si vous êtes sur le réseau interne de votre organisation et que vous avez des restrictions d'accès internet, vous devez configurer un proxy.
-
-### Comment faire ?
-
-1. Copiez le fichier `.env_example` et renommez-le en `.env`
-2. Ouvrez le fichier `.env` avec un éditeur de texte (comme le Bloc-notes)
-3. Remplacez les lignes par les informations de votre proxy :
-
-```
-# Exemple de configuration proxy
-HTTP_PROXY="http://votre-proxy.fr:8080"
-HTTPS_PROXY="http://votre-proxy.fr:8080"
-```
-
-4. Sauvegardez le fichier
-
-> ⚠️ **Important** : Le fichier `.env` ne doit pas être partagé publiquement (il contient des informations sensibles sur votre réseau).
 
 ---
 
