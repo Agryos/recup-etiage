@@ -12,10 +12,10 @@ from functools import cache
 import src.config.init_project
 from src.config.logging_config import setup_logger
 from src.io.pynsee_departement import get_departements_from_regions
+import src.utils.utils_file as utils_file
 
 # Initialiser le logger
 logger = setup_logger(name="download_Hubeau")
-import src.utils.utils_file as utils_file
 
 # TELECHARGEMENT DONNEES MENSUELLES
 

@@ -82,10 +82,10 @@ def fetch_and_update_decennie_ressource_id(data_freq:MeteoFranceDataType):
     match data_freq:
         case MeteoFranceDataType.SIM2_QUOT:
             id_dataset = "6569b27598256cc583c917a7"
-            pattern = re.compile("(QUOT_SIM2_....-....)|(QUOT_SIM2_........-........)")
+            pattern = re.compile("(QUOT_SIM2_....)")
         case MeteoFranceDataType.SIM2_MENS:
             id_dataset = "65e040c50a5c6872ebebc711"
-            pattern = re.compile("MENS_SIM2_....-....")
+            pattern = re.compile("MENS_SIM2_....")
         case MeteoFranceDataType.QUOT:
             id_dataset = "6569b51ae64326786e4e8e1a"
             pattern = re.compile('|'.join(f"(QUOT_departement_{str_dep}_periode_....-...._.*)" for str_dep in get_geographic_list(GeographicScaleClip.DEPARTEMENT_BASSIN)))
@@ -107,22 +107,26 @@ def fetch_and_update_decennie_ressource_id(data_freq:MeteoFranceDataType):
             pass
 
     tous_les_couples = []
+    got_one_match = False
     for res in dataset_complet.resources:
         titre_ressource = res.title
-        if pattern.match(titre_ressource):
-            debut_fin_decenie = titre_ressource.split("_")[-1]
-            if "autres" in debut_fin_decenie  or "RR-T" in debut_fin_decenie:
-                debut_fin_decenie = titre_ressource.split("_")[-2]
-            date_debut = debut_fin_decenie.split("-")[0]
-            date_fin = debut_fin_decenie.split("-")[1]
+        if pattern.fullmatch(titre_ressource):
+            got_one_match = True
+            fin_titre = titre_ressource.split("_")[-1]
+            if "autres" in fin_titre  or "RR-T" in fin_titre:
+                fin_titre = titre_ressource.split("_")[-2]
             tous_les_couples.append(
                 {
-                    "debut_decennie": convert_chaine_to_date(date_debut, True),
-                    "fin_decennie": convert_chaine_to_date(date_fin, False),
+                    "debut_decennie": convert_chaine_to_date(fin_titre, True),
+                    "fin_decennie": convert_chaine_to_date(fin_titre, False),
                     "id_ressource_datagouv": res.id,
                 }
             )
-    df_decennie_id = pd.DataFrame(data=tous_les_couples)
+
+    if not got_one_match:
+        logger.error("Aucun match n'a été effectué dans les noms des fichiers du Dataset. L'expression régulière reconnaissant les noms doit surement être mise à jour.")
+    
+    df_decennie_id = pd.DataFrame(data=tous_les_couples, columns=["debut_decennie", "fin_decennie", "id_ressource_datagouv"])
     logger.info(f"Index decennie -> id_datagouv updated : {chemin_decennie_id}")
     df_decennie_id.to_csv(chemin_decennie_id, index=False)
 
@@ -252,8 +256,7 @@ def get_data_in_range(data_freq: MeteoFranceDataType, date_debut: datetime, date
         raise ValueError("La date de fin est plut tot que la date de début !")
 
     # On met à jour les correspondance decennie -> id_datagouv.
-    if has_index_update:
-        update_decennie_to_id_datagouv(data_freq)
+    update_decennie_to_id_datagouv(data_freq)
 
     # On récupère les correspondance.
     df_decenie_to_id = get_df_decennie_to_id_datagouv(data_freq)

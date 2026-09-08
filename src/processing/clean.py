@@ -8,6 +8,10 @@ import logging
 from functools import cache
 import src.utils.utils_file as utils_file
 from src.config.paths import OUTPUT_DIR
+from src.config.logging_config import setup_logger
+
+# Initialiser le logger
+logger = setup_logger(name="clean")
 
 colonne_date_hubeau = "date_obs_elab"
 colonne_code_station_hubeau = "code_station"
