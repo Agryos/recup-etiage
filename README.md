@@ -16,7 +16,7 @@ Avec cet outil, vous pouvez :
    - **SSWI** : Indice Standardisé d'Humidité des Sols
 - ✅ **Générer des cartes** au format GeoJSON, compatibles avec QGIS et autres logiciels SIG
 
-> **Info** : Documentation en ligne ici : https://github.com/Agryos/recup-etiage.
+> **Info** : Documentation en ligne ici : https://agryos.github.io/recup-etiage/.
 
 ---
 
