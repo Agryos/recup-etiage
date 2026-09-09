@@ -110,15 +110,22 @@ def fetch_and_update_decennie_ressource_id(data_freq:MeteoFranceDataType):
     got_one_match = False
     for res in dataset_complet.resources:
         titre_ressource = res.title
+        # Si le code plante vers cette zone, peut-être le titre de la ressource est mal découpé.
+        # print(titre_ressource)
         if pattern.fullmatch(titre_ressource):
             got_one_match = True
             fin_titre = titre_ressource.split("_")[-1]
+            debut_date = fin_titre
+            fin_date = fin_titre
             if "autres" in fin_titre  or "RR-T" in fin_titre:
                 fin_titre = titre_ressource.split("_")[-2]
+            if len(fin_titre) >= 9:
+                debut_date = fin_titre.split("-")[0]
+                fin_date = fin_titre.split("-")[1]
             tous_les_couples.append(
                 {
-                    "debut_decennie": convert_chaine_to_date(fin_titre, True),
-                    "fin_decennie": convert_chaine_to_date(fin_titre, False),
+                    "debut_decennie": convert_chaine_to_date(debut_date, True),
+                    "fin_decennie": convert_chaine_to_date(fin_date, False),
                     "id_ressource_datagouv": res.id,
                 }
             )
