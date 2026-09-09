@@ -22,12 +22,6 @@ def save_df_onde(df_to_save:pd.DataFrame, csv_path:Path, geojson_path:Path, filt
     :param filter_annee_mois: L'année et le mois à extraire du DataFrame à sauvegarder. Si à None, sauvegarde le DataFrame dans son entièreté.
     :return: Rien
     """
-    if filter_annee_mois is not None:
-        df_to_save = df_to_save[df_to_save["date_observation"].between(
-            filter_annee_mois.replace(day=1),
-            filter_annee_mois.replace(day=calendar.monthrange(filter_annee_mois.year,
-                                                               filter_annee_mois.month)[1])
-        )]
 
     df_to_save.to_csv(csv_path, index=False)
     gpd.GeoDataFrame(df_to_save, geometry=df_to_save["geometry"]).to_file(geojson_path, driver="GeoJSON", index=False)
@@ -99,6 +93,23 @@ def save_observations_campagnes_export(df_to_save:pd.DataFrame, df_campagne_dern
 
     output_path_campagne_no_duplicated_geojson: Path = dossier_geojson / Path(
         f"observations_et_campagnes_latest_{annee_mois_str}_{onde_campagne_type}_{geographic_scale[0]}{zone_code}.geojson")
+
+    if annee_mois is not None:
+        df_to_save = df_to_save[df_to_save["date_observation"].between(
+            annee_mois.replace(day=1),
+            annee_mois.replace(day=calendar.monthrange(annee_mois.year,
+                                                       annee_mois.month)[1])
+        )]
+
+        df_campagne_derniere_donnee_chaque_station = df_campagne_derniere_donnee_chaque_station[df_campagne_derniere_donnee_chaque_station["date_observation"].between(
+            annee_mois.replace(day=1),
+            annee_mois.replace(day=calendar.monthrange(annee_mois.year,
+                                                       annee_mois.month)[1])
+        )]
+
+    if df_to_save.empty:
+        logger.error("Pas de données. Soit le script est cassé, soit la période de temps sélectionnée n'est pas correcte.")
+        raise ValueError("Le DataFrame est vide, il n'y a pas de donnée pour cette période !")
 
     save_df_onde(df_to_save, output_path_campagne_all_csv, output_path_campagne_all_geojson, annee_mois)
 
