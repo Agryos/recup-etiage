@@ -1,6 +1,7 @@
 import pandas as pd
 import geopandas as gpd
 from cl_hubeau import hydrometry
+from cl_hubeau.hydrometry.hydrometry_scraper import HydrometrySession
 from datetime import datetime
 from cl_hubeau import watercourses_flow
 import calendar
@@ -35,7 +36,13 @@ def ensure_grandeur_mensuel_downloaded(annee_mois:str, grandeur:str):
 
 def download_hubeau_AURA_mois(annee_mois : str, grandeur : str):
     """
-    Télécharge les observations élaboré via l'api Hubeau dans le dossier OUTPUT_DIR/hubeau/downloaded_data/observations_elaboree.
+    Télécharge les observations élaborées via l'api Hubeau dans le dossier OUTPUT_DIR/hubeau/downloaded_data/observations_elaboree.
+
+    Utilise une requête paginée par bbox (sans énumération par code_entite) pour
+    récupérer toutes les observations d'un mois en une seule passe. La librairie
+    cl_hubeau découpe automatiquement la plage temporelle si le nombre de résultats
+    dépasse la limite de 20000 de l'API.
+
     :param annee_mois: L'année et le mois à télécharger au format AAAA-MM
     :param grandeur: La grandeur à télécharger parmis -> HIXM, HIXnJ, QINM, QINnJ, QixM, QIXnJ, QmM ou QmnJ
     """
@@ -53,8 +60,6 @@ def download_hubeau_AURA_mois(annee_mois : str, grandeur : str):
     logger.info(f"Téléchargement de la période  : {date_debut_observation}->{date_fin_observation}")
     logger.info(f"Téléchargement de la grandeur : {grandeur}")
 
-    grandeur_hydro = [grandeur]
-
     # Format des données souhaité, pour n'avoir que les bons champs parmi
     # code_site,code_station,date_obs_elab,resultat_obs_elab,date_prod,code_statut,libelle_statut,code_methode,libelle_methode,code_qualification,libelle_qualification,longitude,latitude,grandeur_hydro_elab
     format_attendu = [
@@ -68,16 +73,18 @@ def download_hubeau_AURA_mois(annee_mois : str, grandeur : str):
         "libelle_qualification",
     ]
 
-    dataframe_observation = hydrometry.get_observations(
-        date_debut_obs_elab=date_debut_observation,
-        date_fin_obs_elab=date_fin_observation,
-        grandeur_hydro_elab=grandeur_hydro,
-        bbox=bounding_box_grossiere,
-        fields=format_attendu,
-    )
+    with HydrometrySession() as session:
+        session.size = 20000
+        dataframe_observation = session.get_observations(
+            date_debut_obs_elab=date_debut_observation,
+            date_fin_obs_elab=date_fin_observation,
+            grandeur_hydro_elab=grandeur,
+            bbox=bounding_box_grossiere,
+            fields=format_attendu,
+        )
 
     chemin_fichier = utils.get_path_mensuel_raw_csv(annee_mois,grandeur)
-    dataframe_observation.to_csv(chemin_fichier)
+    dataframe_observation.to_csv(chemin_fichier, index=False)
     logger.info(f"Fichier téléchargé : {chemin_fichier}")
 
 
