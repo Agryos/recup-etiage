@@ -17,6 +17,7 @@ import src.processing.clean as clean
 import src.processing.calcul_vcn3 as calcul_vcn3
 import src.processing.calcul_hydraulicite as calcul_hydraulicite
 import src.processing.meteoFrance_aggregation_donnee as meteo_agg
+import src.processing.meteofrance_normale as meteofrance_normale
 from src.processing.meteoFrance_aggregation_donnee import GroupByMethod
 from src.model.enums import GeographicScaleClip, OndeCampagneType, MeteoFranceDataType
 
@@ -253,6 +254,114 @@ class TestProcessOnde:
         })
         
         result = station.keep_last_station_data(df)
-        
+
         assert isinstance(result, pd.DataFrame)
         assert len(result) == 2  # Should keep only one entry per station
+
+
+class TestMeteoFranceNormale:
+    """Tests for meteofrance_normale.py - calcul des normales historiques.
+
+    Ces tests mockent la couche d'accès aux données (df_range_processed) pour
+    éviter tout téléchargement réseau et exercer directement la logique
+    d'agrégation historique, qui dépend des colonnes variant selon le type
+    de donnée (LAMBX/LAMBY + DATE pour SIM2, LAT/LON + AAAAMM/AAAAMMJJ pour brut).
+    """
+
+    @staticmethod
+    def _make_aggregated_mens_df(year):
+        """Données MENS agrégées par position (sortie d'aggregate_range BY_POSITION)."""
+        aaaamm = int(f"{year}08")
+        return pd.DataFrame({
+            "LAT": [48.0, 49.0],
+            "LON": [2.0, 3.0],
+            "AAAAMM_min": [aaaamm, aaaamm],
+            "AAAAMM_max": [aaaamm, aaaamm],
+            "DATE_DATETIME_min": pd.to_datetime([f"{year}-08-01", f"{year}-08-01"]),
+            "DATE_DATETIME_max": pd.to_datetime([f"{year}-08-31", f"{year}-08-31"]),
+            "RR": [50.0, 60.0],
+            "RR_ME": [55.0, 65.0],
+            "RRAB": [1.0, 2.0],
+            "TX": [25.0, 26.0],
+            "TX_ME": [24.0, 25.0],
+        })
+
+    @staticmethod
+    def _make_aggregated_sim2_mens_df(year):
+        """Données SIM2_MENS agrégées par position (LAMBX/LAMBY, DATE)."""
+        date_int = int(f"{year}08")
+        return pd.DataFrame({
+            "LAMBX": [100, 200],
+            "LAMBY": [100, 200],
+            "DATE_min": [date_int, date_int],
+            "DATE_max": [date_int, date_int],
+            "DATE_DATETIME_min": pd.to_datetime([f"{year}-08-01", f"{year}-08-01"]),
+            "DATE_DATETIME_max": pd.to_datetime([f"{year}-08-31", f"{year}-08-31"]),
+            "PRENEI": [10.0, 20.0],
+            "PRELIQ": [30.0, 40.0],
+            "PRETOTM": [40.0, 60.0],
+            "T": [20.0, 22.0],
+            "EVAP": [5.0, 6.0],
+            "ETP": [7.0, 8.0],
+            "PE": [33.0, 52.0],
+            "SWI": [0.5, 0.6],
+            "DRAINC": [1.0, 2.0],
+            "RUNC": [1.0, 2.0],
+            "ECOULEMENT": [1.0, 2.0],
+        })
+
+    @patch('src.processing.meteofrance_normale.get_path_meteofrance_historic_mean')
+    @patch('src.processing.meteofrance_normale.df_range_processed')
+    def test_get_historic_mean_mens(self, mock_df_range, mock_path, tmp_path):
+        """get_historic_mean doit fonctionner pour MENS (LAT/LON, AAAAMM_min).
+
+        Avant le fix, levait KeyError: 'DATE_min' (MENS n'a pas de colonne DATE).
+        """
+        mock_path.return_value = tmp_path / "nonexistent-historic.csv"
+        mock_df_range.side_effect = lambda data_freq, start_date, *a, **k: \
+            self._make_aggregated_mens_df(start_date.year)
+
+        result = meteofrance_normale.get_historic_mean(
+            MeteoFranceDataType.MENS, datetime(2026, 8, 1), datetime(2026, 8, 31))
+
+        assert isinstance(result, pd.DataFrame)
+        # 2 positions distinctes -> 2 lignes après groupby par LAT/LON
+        assert len(result) == 2
+        assert {"LAT", "LON"}.issubset(result.columns)
+        assert "RR" in result.columns
+        assert "TX_ME" in result.columns
+
+    @patch('src.processing.meteofrance_normale.get_path_meteofrance_historic_mean')
+    @patch('src.processing.meteofrance_normale.df_range_processed')
+    def test_get_historic_mean_sim2_mens_still_works(self, mock_df_range, mock_path, tmp_path):
+        """get_historic_mean doit toujours fonctionner pour SIM2_MENS (LAMBX/LAMBY, DATE_min)."""
+        mock_path.return_value = tmp_path / "nonexistent-historic.csv"
+        mock_df_range.side_effect = lambda data_freq, start_date, *a, **k: \
+            self._make_aggregated_sim2_mens_df(start_date.year)
+
+        result = meteofrance_normale.get_historic_mean(
+            MeteoFranceDataType.SIM2_MENS, datetime(2026, 8, 1), datetime(2026, 8, 31))
+
+        assert isinstance(result, pd.DataFrame)
+        assert len(result) == 2
+        assert {"LAMBX", "LAMBY"}.issubset(result.columns)
+
+    @patch('src.processing.meteofrance_normale.get_path_meteofrance_historic_mean')
+    @patch('src.processing.meteofrance_normale.df_range_processed')
+    def test_get_rapport_normale_mens(self, mock_df_range, mock_path, tmp_path):
+        """get_rapport_normale doit calculer les rapports à la normale pour MENS.
+
+        Avant le fix, levait KeyError sur set_index(['LAMBX','LAMBY']) (MENS utilise LAT/LON).
+        """
+        mock_path.return_value = tmp_path / "nonexistent-historic.csv"
+        mock_df_range.side_effect = lambda data_freq, start_date, *a, **k: \
+            self._make_aggregated_mens_df(start_date.year)
+
+        df_actuel = self._make_aggregated_mens_df(2026)
+        result = meteofrance_normale.get_rapport_normale(
+            MeteoFranceDataType.MENS, df_actuel, datetime(2026, 8, 1), datetime(2026, 8, 31))
+
+        assert isinstance(result, pd.DataFrame)
+        assert "RR_rapport_normale" in result.columns
+        assert "TX_ME_rapport_normale" in result.columns
+        assert {"LAT", "LON"}.issubset(result.columns)

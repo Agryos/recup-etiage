@@ -50,6 +50,35 @@ def get_unit_to_mean(data_freq: MeteoFranceDataType) -> list[str]:
         case MeteoFranceDataType.MENS:
             return ["RR","RR_ME","RRAB","TX","TX_ME"]
 
+def get_position_columns(data_freq: MeteoFranceDataType) -> list[str]:
+    """
+    Renvoie les colonnes identifiant une position géographique selon le type de donnée.
+    Les données SIM2 utilisent les coordonnées Lambert (LAMBX/LAMBY),
+    les données brutes (QUOT/MENS) utilisent la latitude/longitude (LAT/LON).
+    """
+    match data_freq:
+        case MeteoFranceDataType.SIM2_QUOT | MeteoFranceDataType.SIM2_MENS:
+            return ["LAMBX", "LAMBY"]
+        case MeteoFranceDataType.QUOT | MeteoFranceDataType.MENS:
+            return ["LAT", "LON"]
+        case _:
+            raise NotImplementedError
+
+def get_date_column_name(data_freq: MeteoFranceDataType) -> str:
+    """
+    Renvoie le nom de la colonne contenant la date (au format int) selon le type de donnée.
+    Après une agrégation par position, cette colonne devient '{colonne}_min'/'{colonne}_max'.
+    """
+    match data_freq:
+        case MeteoFranceDataType.SIM2_QUOT | MeteoFranceDataType.SIM2_MENS:
+            return "DATE"
+        case MeteoFranceDataType.QUOT:
+            return "AAAAMMJJ"
+        case MeteoFranceDataType.MENS:
+            return "AAAAMM"
+        case _:
+            raise NotImplementedError
+
 def get_historic_mean(data_freq:MeteoFranceDataType, date_debut:datetime, date_fin:datetime):
     """
     Récupère les données historiques d'une unité particulière.
@@ -69,18 +98,20 @@ def get_historic_mean(data_freq:MeteoFranceDataType, date_debut:datetime, date_f
 
     # On récupère tous les dataframes de chaque années sur la période date_début-date_fin
     all_df = []
+    position_columns = get_position_columns(data_freq)
+    date_column = get_date_column_name(data_freq)
     for annee in range(1990,2021):
         date_debut_extrait_historique = date_debut.replace(year=annee)
         date_fin_extrait_historique = date_fin.replace(year=annee)
 
         df_panda = df_range_processed(data_freq, date_debut_extrait_historique, date_fin_extrait_historique, True)
-        df_panda["DATE"] = df_panda["DATE_min"]
+        df_panda["DATE"] = df_panda[f"{date_column}_min"]
         df_panda["DATE_DATETIME"] = df_panda["DATE_DATETIME_min"]
         all_df.append(df_panda)
 
     df_concatenated = pd.concat(all_df, ignore_index=True)
 
-    df_groupped_by = df_concatenated.groupby(by=["LAMBX","LAMBY"])
+    df_groupped_by = df_concatenated.groupby(by=position_columns)
 
     # On récupère toutes les colonnes dont on doit faire la moyenne
     list_unit_to_mean = get_unit_to_mean(data_freq)
@@ -110,8 +141,9 @@ def get_rapport_normale(data_freq:MeteoFranceDataType, df_donnee_actuelle:pd.Dat
     logger.info("Récupération des données historiques et calcul du ratios")
     df_donnee_moyenne_historique = get_historic_mean(data_freq, date_debut, date_fin)
 
-    df_ref = df_donnee_moyenne_historique.set_index(["LAMBX", "LAMBY"])
-    df_actuel = df_donnee_actuelle.set_index(["LAMBX", "LAMBY"])
+    position_columns = get_position_columns(data_freq)
+    df_ref = df_donnee_moyenne_historique.set_index(position_columns)
+    df_actuel = df_donnee_actuelle.set_index(position_columns)
 
     # On construit une liste en ajoutant rapport_normale à la fin
     list_unit_to_mean = get_unit_to_mean(data_freq)
