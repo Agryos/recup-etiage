@@ -1,0 +1,64 @@
+# hydraulicité
+python main.py --type hydraulicite --start_date 2026-07-01 --end_date 2026-07-31
+python main.py --type hydraulicite --start_date [DEBUT MOIS ACTUEL] --end_date [FIN MOIS ACTUEL]
+python main.py --type hydraulicite
+python main.py --type hydraulicite --reseau_sandre BSH001
+python main.py --type hydraulicite --reseau_sandre custom
+
+# VCN3 (cassé actuellement)
+python main.py --type vcn3 --start_date 2026-07-01 --end_date 2026-07-31
+python main.py --type vcn3 --start_date [DEBUT MOIS ACTUEL] --end_date [FIN MOIS ACTUEL]
+python main.py --type vcn3
+python main.py --type vcn3 --reseau_sandre BSH001
+python main.py --type vcn3 --reseau_sandre custom
+python main.py --type vcn3 --vcn3_graphic
+
+# MeteoFrance
+## meteo_sim_MENS
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --meteo_aggregate
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31
+python main.py --type meteo_sim2_MENS --start_date 2026-07-01 --end_date 2026-08-31 --meteo_aggregate
+python main.py --type meteo_sim2_MENS --start_date 2026-07-01 --end_date 2026-08-31
+
+## meteo_brut_MENS (cassé actuellement)
+python main.py --type meteo_brut_MENS --start_date 2026-08-01 --end_date 2026-08-31 --meteo_aggregate
+python main.py --type meteo_brut_MENS --start_date 2026-08-01 --end_date 2026-08-31
+python main.py --type meteo_brut_MENS --start_date 2026-07-01 --end_date 2026-08-31 --meteo_aggregate
+python main.py --type meteo_brut_MENS --start_date 2026-07-01 --end_date 2026-08-31
+
+## meteo_sim2_QUOT
+python main.py --type meteo_sim2_QUOT --start_date 2026-08-01 --end_date 2026-08-01 --meteo_aggregate
+python main.py --type meteo_sim2_QUOT --start_date 2026-08-01 --end_date 2026-08-01
+python main.py --type meteo_sim2_QUOT --start_date 2026-07-29 --end_date 2026-08-04 --meteo_aggregate
+python main.py --type meteo_sim2_QUOT --start_date 2026-07-29 --end_date 2026-08-04
+
+
+## meteo_brut_QUOT
+python main.py --type meteo_brut_QUOT --start_date 2026-08-01 --end_date 2026-08-01 --meteo_aggregate
+python main.py --type meteo_brut_QUOT --start_date 2026-08-01 --end_date 2026-08-01
+python main.py --type meteo_brut_QUOT --start_date 2026-07-29 --end_date 2026-08-04 --meteo_aggregate
+python main.py --type meteo_brut_QUOT --start_date 2026-07-29 --end_date 2026-08-04
+
+## Geographic scale
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale NATIONAL
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale BASSIN
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale REGION_ADMINISTRATIVE
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale DEPARTEMENT_ADMINISTRATIF
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale REGION_BASSIN
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale DEPARTEMENT_BASSIN
+
+## Geographic scale
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale NATIONAL
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale BASSIN
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale REGION_ADMINISTRATIVE
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale DEPARTEMENT_ADMINISTRATIF
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale REGION_BASSIN
+python main.py --type meteo_sim2_MENS --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale DEPARTEMENT_BASSIN
+
+# ONDE
+python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale BASSIN --onde_zone_code 06
+python main.py --type onde_USUELLE --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale BASSIN --onde_zone_code 06
+python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale DEPARTEMENT_ADMINISTRATIF --onde_zone_code 33
+python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale DEPARTEMENT_BASSIN --onde_zone_code 33
+python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale REGION_ADMINISTRATIF --onde_zone_code 33
+python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale REGION_BASSIN --onde_zone_code 33
