@@ -167,11 +167,11 @@ def ensure_historic_cleaned(code_reseau_sandre:str, grandeur:str):
     start_date = "1991-01-01"
     if grandeur == "QmnJ":
         start_date = "1990-12-01"
-    chemin_source = utils.get_paths_source_historique(grandeur)
+    # chemin_source = utils.get_paths_source_historique(grandeur)
     for date in pd.date_range(start_date, "2020-12-01", freq="MS"):
         annee_mois = date.strftime("%Y-%m")
         chemin_fichier_clean_mensuel = utils.get_path_clean_csv(code_reseau_sandre, annee_mois, grandeur)
-        if not utils_file.is_res_updated_with_source(chemin_source, chemin_fichier_clean_mensuel):
+        if not chemin_fichier_clean_mensuel.exists():
             clean_historic_data(code_reseau_sandre, grandeur)
 
 

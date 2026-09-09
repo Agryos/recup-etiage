@@ -407,6 +407,11 @@ def get_graphic_parameter(unit_to_get_graphic: str) -> tuple[str, bool, list[str
 
 def get_departement_to_draw_from_region(code_zone: str) -> gpd.GeoDataFrame:
     DEPARTEMENT = OUTPUT_DIR / "meteoFrance/downloaded_data/delimitation_qgis/departements-50m.geojson"
+    if not DEPARTEMENT.exists():
+        # TODO automatic download
+        logger.error("Le fichier de délimitation n'a pas été téléchargé.")
+        logger.error("Téléchagez le fichier https://www.data.gouv.fr/api/1/datasets/r/93a2ba8f-e30f-4916-a73b-0c4d87247ace, décompressez et placez le " + DEPARTEMENT)
+        pass # 93a2ba8f-e30f-4916-a73b-0c4d87247ace
     geo_departement_mask = gpd.read_file(DEPARTEMENT).to_crs(2154)
     geo_departement_mask = geo_departement_mask[
         geo_departement_mask["code"].isin(get_departements_from_regions(code_zone))]
