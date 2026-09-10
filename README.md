@@ -187,6 +187,8 @@ Un script d'exemple se situe dans `script/example_cli.bat`. Vous pouvez créer u
 ```
 > ➡️ Cela génère une carte montrant l'hydraulicité (niveau d'eau par rapport à la normale) pour toutes les stations du réseau BSH001 au mois de janvier 2026.
 
+![Carte représentant des stations hydrométriques et leur niveau d'hydraulicité](img/hydraulicite-BSH001-2026-08.png)
+
 ---
 
 **Exemple 2 : Calculer le VCN3 pour février 2024 avec des graphiques individuels**
@@ -203,6 +205,8 @@ Un script d'exemple se situe dans `script/example_cli.bat`. Vous pouvez créer u
 ```
 > ➡️ Récupère les données météo SIM2 (indice de sécheresse, précipitations) pour tout le mois de juillet 2023, jour par jour.
 
+![Evolution des Pluie Efficace sur quelque jour. Le graphe évolue du négatif vers le positif.](img/PE.png)
+
 ---
 
 **Exemple 4 : Récupérer les données météo SIM2 mensuelles agrégées depuis septembre 2025**
@@ -211,6 +215,8 @@ Un script d'exemple se situe dans `script/example_cli.bat`. Vous pouvez créer u
 ```
 > ➡️ Le flag `--meteo_aggregate` permet d'agréger (sommer) les données sur toute la période pour avoir une vue d'ensemble.
 
+![Carte représentant l'évapotranspiration lors du mois d'aout 2026. La carte est quasiment toute rouge foncé, il y a eu une énorme quantité d'eau évaporée.](img/MENS-SIM2-aggregated-20260801-20260831-B06-EVAP.png)
+
 ---
 
 **Exemple 5 : Récupérer les données ONDE pour le bassin versant Rhône-Méditerranée (code 06)**
@@ -218,6 +224,9 @@ Un script d'exemple se situe dans `script/example_cli.bat`. Vous pouvez créer u
 .\venv\Scripts\python.exe main.py --type onde_ALL --start_date 2026-06-01 --geographic_scale BASSIN --onde_zone_code 06
 ```
 > ➡️ Récupère toutes les données ONDE (usuelle + complémentaire) pour le bassin versant 06 (Rhône-Méditerranée) pour juin 2026.
+
+![Graphique montrant l'évolution des assecs en fonction du temps. On voit que les assecs augmentent énormement en aout et moins le reste du temps.](img/onde_evolution-assec_2026_A.png)
+
 
 ---
 
