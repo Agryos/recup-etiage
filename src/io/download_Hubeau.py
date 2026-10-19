@@ -12,11 +12,34 @@ from src.model.enums import GeographicScaleClip
 from functools import cache
 import src.config.init_project
 from src.config.logging_config import setup_logger
-from src.io.pynsee_departement import get_departements_from_regions
+from src.io.pynsee_departement import get_departements_from_regions, get_region_name
 import src.utils.utils_file as utils_file
 
 # Initialiser le logger
 logger = setup_logger(name="download_Hubeau")
+
+def _valider_code_region(code_zone: str) -> None:
+    """
+    Vérifie que le code de région fourni est un code INSEE de région valide.
+
+    Les fonctions cl_hubeau (get_all_observations / get_all_campaigns) font un
+    lookup du code dans un index CODE_REG et lèvent un KeyError cryptique
+    ("None of [Index([...], name='CODE_REG')] are in the [index]") si le code
+    n'existe pas. Ce code est souvent en réalité un code de département
+    (ex: '33' = Gironde) utilisé à la place du code de région (ex: '75' =
+    Nouvelle-Aquitaine). On lève ici une erreur claire pour aider au diagnostic.
+    :param code_zone: Le code de région à valider.
+    :return: Rien. Lève une ValueError si le code n'est pas une région valide.
+    """
+    nom_region = get_region_name(code_zone)
+    if nom_region is None:
+        raise ValueError(
+            f"Le code '{code_zone}' n'est pas un code de région INSEE valide. "
+            f"Vérifiez qu'il s'agit bien d'un code de région (ex: '75' pour Nouvelle-Aquitaine, "
+            f"'84' pour Auvergne-Rhône-Alpes) et non d'un code de département "
+            f"(ex: '33' pour la Gironde). Pour les échelles REGION_ADMINISTRATIVE / "
+            f"REGION_BASSIN, utilisez un code de région."
+        )
 
 # TELECHARGEMENT DONNEES MENSUELLES
 
@@ -82,6 +105,14 @@ def download_hubeau_AURA_mois(annee_mois : str, grandeur : str):
             bbox=bounding_box_grossiere,
             fields=format_attendu,
         )
+
+    # Si l'API ne renvoie aucune donnée (ex: mois en cours non encore publié),
+    # le DataFrame peut être totalement vide (sans colonnes). On force alors les
+    # colonnes attendues pour que le fichier CSV contienne au moins un en-tête,
+    # évitant ainsi une EmptyDataError ("No columns to parse from file") à la lecture.
+    if dataframe_observation is None or (dataframe_observation.empty and dataframe_observation.columns.empty):
+        logger.warning(f"Aucune donnée renvoyée par l'API pour {grandeur} sur {annee_mois}. Fichier vide (en-tête uniquement).")
+        dataframe_observation = pd.DataFrame(columns=format_attendu)
 
     chemin_fichier = utils.get_path_mensuel_raw_csv(annee_mois,grandeur)
     dataframe_observation.to_csv(chemin_fichier, index=False)
@@ -160,6 +191,7 @@ def download_hubeau_onde_campagnes(zone_geographic:GeographicScaleClip, code_zon
         case GeographicScaleClip.DEPARTEMENT_BASSIN | GeographicScaleClip.DEPARTEMENT_ADMINISTRATIF:
             gdf = watercourses_flow.get_all_campaigns(code_departement=[code_zone])
         case GeographicScaleClip.REGION_BASSIN | GeographicScaleClip.REGION_ADMINISTRATIVE:
+            _valider_code_region(code_zone)
             gdf = watercourses_flow.get_all_campaigns(code_departement=get_departements_from_regions(code_zone))
         case _:
             gdf = watercourses_flow.get_all_campaigns()
@@ -190,6 +222,7 @@ def download_hubeau_onde_observations_geographic_zone(date_debut_obs:datetime, d
         case GeographicScaleClip.BASSIN:
             kwargs["code_bassin"] = code_zone
         case GeographicScaleClip.REGION_BASSIN | GeographicScaleClip.REGION_ADMINISTRATIVE:
+            _valider_code_region(code_zone)
             kwargs["code_region"] = code_zone
         case GeographicScaleClip.DEPARTEMENT_BASSIN | GeographicScaleClip.DEPARTEMENT_ADMINISTRATIF:
             kwargs["code_departement"] = code_zone

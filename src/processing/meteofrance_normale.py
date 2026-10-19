@@ -137,21 +137,32 @@ def get_historic_mean(data_freq:MeteoFranceDataType, date_debut:datetime, date_f
 def get_rapport_normale(data_freq:MeteoFranceDataType, df_donnee_actuelle:pd.DataFrame, date_debut:datetime, date_fin:datetime):
     """
     Prend le dataFrame en entrée, créer les normales pour ce DataFrame.
+
+    Le ratio est calculé en fusionnant les données actuelles avec la moyenne historique
+    sur les colonnes de position. La moyenne historique contient une entrée unique par
+    position, tandis que les données actuelles peuvent en contenir plusieurs (une par
+    date, par exemple sur une plage de plusieurs mois). La fusion propage la valeur
+    historique à chaque ligne des données actuelles, ce qui évite l'erreur
+    "cannot handle a non-unique multi-index" qui survenait avec une division directe
+    sur un index de position non-unique.
     """
     logger.info("Récupération des données historiques et calcul du ratios")
     df_donnee_moyenne_historique = get_historic_mean(data_freq, date_debut, date_fin)
 
     position_columns = get_position_columns(data_freq)
-    df_ref = df_donnee_moyenne_historique.set_index(position_columns)
-    df_actuel = df_donnee_actuelle.set_index(position_columns)
-
-    # On construit une liste en ajoutant rapport_normale à la fin
     list_unit_to_mean = get_unit_to_mean(data_freq)
-    list_unit_normale = [ f"{unit}_rapport_normale" for unit in list_unit_to_mean ]
 
-    # On fait un très très gros ratio
-    df_actuel[list_unit_normale] = (df_actuel[list_unit_to_mean]) / df_ref[list_unit_to_mean].abs().clip(lower=0.01)
-    df_actuel.reset_index(inplace=True)
+    # On fusionne les données actuelles avec la moyenne historique sur les colonnes de position.
+    # Les colonnes de la moyenne historique reçoivent le suffixe "_ref" pour éviter les conflits.
+    df_ref = df_donnee_moyenne_historique[position_columns + list_unit_to_mean].copy()
+    df_actuel = df_donnee_actuelle.merge(df_ref, on=position_columns, how="left", suffixes=("", "_ref"))
+
+    # On fait le ratio pour chaque unité : valeur actuelle / valeur historique (bornée à 0.01).
+    for unit in list_unit_to_mean:
+        df_actuel[f"{unit}_rapport_normale"] = df_actuel[unit] / df_actuel[f"{unit}_ref"].abs().clip(lower=0.01)
+
+    # On supprime les colonnes de référence temporaires.
+    df_actuel = df_actuel.drop(columns=[f"{unit}_ref" for unit in list_unit_to_mean])
 
     logger.info("Récupération des données historiques et calcul ratio terminé.")
     return df_actuel

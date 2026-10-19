@@ -60,5 +60,5 @@ python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --g
 python main.py --type onde_USUELLE --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale BASSIN --onde_zone_code 06
 python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale DEPARTEMENT_ADMINISTRATIF --onde_zone_code 33
 python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale DEPARTEMENT_BASSIN --onde_zone_code 33
-python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale REGION_ADMINISTRATIF --onde_zone_code 33
-python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale REGION_BASSIN --onde_zone_code 33
+python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale REGION_ADMINISTRATIVE --onde_zone_code 75
+python main.py --type onde_ALL --start_date 2026-08-01 --end_date 2026-08-31 --geographic_scale REGION_BASSIN --onde_zone_code 75
