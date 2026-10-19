@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recup-Etiage — WebUI</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-inner">
+            <h1>Recup-Etiage <span class="accent">WebUI</span></h1>
+            <p class="subtitle">Génération de cartes hydrologiques &amp; météorologiques</p>
+        </div>
+    </header>
+
+    <main class="layout">
+        <!-- Panneau de configuration -->
+        <section class="panel config-panel">
+            <h2>Configuration</h2>
+            <form id="config-form" autocomplete="off">
+                <div class="field">
+                    <label for="type">Type de génération</label>
+                    <select id="type" name="type" required></select>
+                    <p class="help" id="type-description"></p>
+                </div>
+
+                <div id="dynamic-fields"></div>
+
+                <div class="actions">
+                    <button type="submit" id="launch-btn" class="btn-primary">Lancer la génération</button>
+                    <button type="button" id="reset-btn" class="btn-ghost">Réinitialiser</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Panneau de résultats -->
+        <section class="panel results-panel">
+            <div class="tabs" role="tablist">
+                <button class="tab active" data-tab="logs" role="tab">Logs</button>
+                <button class="tab" data-tab="jobs" role="tab">Jobs</button>
+                <button class="tab" data-tab="output" role="tab">Résultats</button>
+            </div>
+
+            <!-- Onglet Logs -->
+            <div id="tab-logs" class="tab-content active">
+                <div class="log-header">
+                    <span id="log-status" class="status-badge idle">Aucun job actif</span>
+                    <button id="cancel-btn" class="btn-danger hidden">Annuler</button>
+                </div>
+                <pre id="log-console" class="log-console" aria-live="polite"></pre>
+            </div>
+
+            <!-- Onglet Jobs -->
+            <div id="tab-jobs" class="tab-content">
+                <ul id="jobs-list" class="jobs-list"></ul>
+            </div>
+
+            <!-- Onglet Résultats -->
+            <div id="tab-output" class="tab-content">
+                <div id="output-breadcrumb" class="breadcrumb"></div>
+                <ul id="output-list" class="output-list"></ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <span>Les résultats sont écrits dans <code>output/</code> au format GeoJSON (QGIS).</span>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

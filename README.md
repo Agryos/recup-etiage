@@ -253,6 +253,31 @@ Un script d'exemple se situe dans `script/example_cli.bat`. Vous pouvez créer u
 
 ---
 
+### 🔹 Option 3 : Mode Web (WebUI)
+
+Une interface web permet de lancer les mêmes générations depuis un navigateur,
+avec les mêmes fonctionnalités que le mode interactif et le mode CLI. Chaque
+génération s'exécute en arrière-plan, les logs s'affichent en direct et les
+résultats sont navigables depuis la page.
+
+#### Installation et lancement
+
+```bash
+# 1. Installer les dépendances web (en plus de requirements.txt)
+.\venv\Scripts\pip.exe install -r requirements-webui.txt
+
+# 2. Lancer la WebUI (depuis le dossier du programme)
+.\venv\Scripts\python.exe -m webui.app
+```
+
+Puis ouvrez **http://127.0.0.1:8000** dans votre navigateur.
+
+> Des scripts de lancement sont fournis : `run_webui.bat` (Windows) et
+> `run_webui.sh` (Linux/macOS). La documentation complète de la WebUI se trouve
+> dans [`webui/README.md`](webui/README.md).
+
+---
+
 ## 🗂️ Fichiers de Configuration et Données Personnalisées
 
 ### Utiliser vos propres listes de stations/sites
