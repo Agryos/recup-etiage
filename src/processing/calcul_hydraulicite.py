@@ -34,7 +34,20 @@ def calcul_hydraulicite_mensuel(annee_mois: str, code_sandre: str):
     chemin_data_du_mois_clean = utils.get_path_clean_csv(code_sandre, annee_mois,grandeur)
 
     clean.ensure_single_month_cleaned(annee_mois, code_sandre, grandeur)
-    df_mois = pd.DataFrame(pd.read_csv(chemin_data_du_mois_clean))
+    # Le fichier nettoyé peut être vide (ex: mois en cours dont les données ne sont
+    # pas encore publiées par Hub'Eau). On gère ce cas pour éviter une EmptyDataError.
+    if not chemin_data_du_mois_clean.exists() or chemin_data_du_mois_clean.stat().st_size == 0:
+        logger.warning(f"Pas de données nettoyées pour {annee_mois} ({grandeur}). Fichier vide ou absent : {chemin_data_du_mois_clean}. Abandon du calcul d'hydraulicité.")
+        return
+    try:
+        df_mois = pd.DataFrame(pd.read_csv(chemin_data_du_mois_clean))
+    except pd.errors.EmptyDataError:
+        logger.warning(f"Le fichier nettoyé {chemin_data_du_mois_clean} est vide (aucune colonne). Abandon du calcul d'hydraulicité.")
+        return
+
+    if df_mois.empty:
+        logger.warning(f"Pas de données pour {annee_mois} ({grandeur}). Abandon du calcul d'hydraulicité.")
+        return
 
     # Aggregation des données du mois via une moyenne.
     if is_aggregated:
