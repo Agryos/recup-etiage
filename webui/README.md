@@ -18,7 +18,7 @@ complète (un plantage ne fait pas tomber le serveur) et une annulation simple.
 ```
 webui/
 ├── __init__.py
-├── app.py              # Application FastAPI (routes API + service des fichiers)
+├── app.py              # Application FastAPI (routes API)
 ├── job_manager.py      # Gestion des jobs (sous-processus + capture des logs)
 ├── schema.py           # Types de génération + construction des commandes CLI
 ├── static/
@@ -28,9 +28,8 @@ webui/
 └── README.md
 ```
 
-- **Backend** : FastAPI. Sert l'interface, expose l'API REST, diffuse les logs
-  en temps réel via **SSE** (Server-Sent Events) et sert les fichiers de
-  `output/`.
+- **Backend** : FastAPI. Sert l'interface, expose l'API REST et diffuse les
+  logs en temps réel via **SSE** (Server-Sent Events).
 - **Frontend** : HTML/CSS/JS vanilla, aucune étape de build.
 - **Exécution** : chaque job lance `python main.py --type ...` en
   sous-processus, dans le même environnement (venv) que le serveur.
@@ -83,10 +82,10 @@ Exemple : `WEBUI_PORT=9000 python -m webui.app`
 3. **Lancez la génération**. Les logs s'affichent en direct dans l'onglet
    *Logs*.
 4. **Suivez l'état** dans l'onglet *Jobs* (en cours, terminé, échec, annulé).
-5. **Parcourez les résultats** dans l'onglet *Résultats* : navigation dans
-   `output/`, clic sur un fichier pour l'ouvrir/télécharger.
 
-Vous pouvez **annuler** un job en cours via le bouton *Annuler*.
+Les fichiers générés sont écrits dans le dossier `output/` (format GeoJSON,
+compatible QGIS). Vous pouvez **annuler** un job en cours via le bouton
+*Annuler*.
 
 ## Correspondance avec le mode CLI
 
@@ -110,12 +109,8 @@ Vous pouvez **annuler** un job en cours via le bouton *Annuler*.
 | `GET` | `/api/jobs/{id}` | Statut d'un job |
 | `POST` | `/api/jobs/{id}/cancel` | Annule un job |
 | `GET` | `/api/jobs/{id}/events` | Flux SSE des logs d'un job |
-| `GET` | `/api/output?path=…` | Liste le contenu d'un sous-dossier de `output/` |
-| `GET` | `/api/output/file?path=…` | Sert un fichier de `output/` |
 
 ## Sécurité
 
 - L'API ne comporte **pas d'authentification** : elle est conçue pour un usage
   local (poste de travail / réseau interne de confiance).
-- L'accès aux fichiers est restreint au dossier `output/` (protection contre la
-  traversée de chemin).

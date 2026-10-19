@@ -25,7 +25,6 @@ async function init() {
     setupTabs();
     setupForm();
     loadJobs();
-    loadOutput('');
 }
 
 // ---------------------------------------------------------------------------
@@ -200,7 +199,6 @@ function connectToJob(jobId) {
                 state.eventSource = null;
                 $('cancel-btn').classList.add('hidden');
                 loadJobs();
-                loadOutput('');
             }
         }
     };
@@ -282,73 +280,6 @@ async function loadJobs() {
 }
 
 // ---------------------------------------------------------------------------
-// Navigateur de résultats
-// ---------------------------------------------------------------------------
-
-async function loadOutput(path) {
-    try {
-        const res = await fetch(`/api/output?path=${encodeURIComponent(path)}`);
-        if (!res.ok) {
-            $('output-list').innerHTML = '<li class="output-item"><span class="name">Dossier introuvable.</span></li>';
-            return;
-        }
-        const data = await res.json();
-        renderBreadcrumb(path);
-        const list = $('output-list');
-        list.innerHTML = '';
-        if (data.items.length === 0) {
-            const li = document.createElement('li');
-            li.className = 'output-item';
-            li.innerHTML = '<span class="name" style="color:var(--text-muted)">Dossier vide.</span>';
-            list.appendChild(li);
-            return;
-        }
-        for (const item of data.items) {
-            const li = document.createElement('li');
-            li.className = 'output-item ' + item.type;
-            const icon = item.type === 'dir' ? 'DIR' : extLabel(item.name);
-            const size = item.type === 'file' ? `<span class="size">${formatSize(item.size)}</span>` : '';
-            li.innerHTML = `
-                <span class="type-icon">${icon}</span>
-                <span class="name">${escapeHtml(item.name)}</span>
-                ${size}
-            `;
-            const newPath = path ? `${path}/${item.name}` : item.name;
-            li.addEventListener('click', () => {
-                if (item.type === 'dir') {
-                    loadOutput(newPath);
-                } else {
-                    window.open(`/api/output/file?path=${encodeURIComponent(newPath)}`, '_blank');
-                }
-            });
-            list.appendChild(li);
-        }
-    } catch (err) {
-        console.error('Chargement des résultats impossible', err);
-    }
-}
-
-function renderBreadcrumb(path) {
-    const bc = $('output-breadcrumb');
-    bc.innerHTML = '';
-    const parts = path ? path.split('/') : [];
-    let acc = '';
-    const root = document.createElement('a');
-    root.textContent = 'output/';
-    root.addEventListener('click', () => loadOutput(''));
-    bc.appendChild(root);
-    for (const part of parts) {
-        acc += (acc ? '/' : '') + part;
-        const sep = document.createTextNode(' / ');
-        bc.appendChild(sep);
-        const link = document.createElement('a');
-        link.textContent = part;
-        link.addEventListener('click', () => loadOutput(acc));
-        bc.appendChild(link);
-    }
-}
-
-// ---------------------------------------------------------------------------
 // Onglets
 // ---------------------------------------------------------------------------
 
@@ -373,18 +304,6 @@ function escapeHtml(str) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
-}
-
-function extLabel(name) {
-    const ext = (name.split('.').pop() || '').toUpperCase();
-    return ext.length <= 4 ? ext : 'FILE';
-}
-
-function formatSize(bytes) {
-    if (bytes == null) return '';
-    if (bytes < 1024) return bytes + ' o';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' Ko';
-    return (bytes / (1024 * 1024)).toFixed(1) + ' Mo';
 }
 
 function formatTime(iso) {

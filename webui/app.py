@@ -6,7 +6,6 @@ Points d'entrée :
 - ``/api/types`` : schéma du formulaire (types de génération + champs).
 - ``/api/jobs`` : création / liste / statut / annulation de jobs.
 - ``/api/jobs/{id}/events`` : flux SSE des logs d'un job en temps réel.
-- ``/api/output`` : navigation et téléchargement des fichiers générés.
 
 Lancement (depuis la racine du projet, dans le venv) :
     python -m webui.app
@@ -23,8 +22,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-
-from src.config.paths import OUTPUT_DIR, ROOT_DIR
 
 from .job_manager import job_manager
 from .schema import build_commands, build_types_schema
@@ -150,41 +147,6 @@ async def job_events(job_id: str):
             "X-Accel-Buffering": "no",
         },
     )
-
-
-# ----------------------------------------------------------------------------
-# Fichiers de sortie
-# ----------------------------------------------------------------------------
-
-def _safe_output_path(relative: str) -> Path:
-    base = OUTPUT_DIR.resolve()
-    target = (base / (relative or "")).resolve()
-    if not target.is_relative_to(base):
-        raise HTTPException(status_code=403, detail="Chemin non autorisé")
-    return target
-
-
-@app.get("/api/output")
-async def list_output(path: str = ""):
-    target = _safe_output_path(path)
-    if not target.exists() or not target.is_dir():
-        raise HTTPException(status_code=404, detail="Dossier introuvable")
-    items = []
-    for entry in sorted(target.iterdir(), key=lambda e: (e.is_file(), e.name.lower())):
-        items.append({
-            "name": entry.name,
-            "type": "dir" if entry.is_dir() else "file",
-            "size": entry.stat().st_size if entry.is_file() else None,
-        })
-    return {"path": path, "items": items}
-
-
-@app.get("/api/output/file")
-async def serve_output_file(path: str):
-    target = _safe_output_path(path)
-    if not target.exists() or not target.is_file():
-        raise HTTPException(status_code=404, detail="Fichier introuvable")
-    return FileResponse(target, filename=target.name)
 
 
 # ----------------------------------------------------------------------------
