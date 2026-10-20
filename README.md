@@ -253,6 +253,43 @@ Un script d'exemple se situe dans `script/example_cli.bat`. Vous pouvez créer u
 
 ---
 
+### 🔹 Option 3 : Mode Web (WebUI)
+
+Une interface web permet de lancer les mêmes générations depuis un navigateur,
+avec les mêmes fonctionnalités que le mode interactif et le mode CLI. Chaque
+génération s'exécute en arrière-plan, les logs s'affichent en direct et l'état
+de chaque job est suivi.
+
+#### Ce que ça permet
+
+- Lancer les **6 types de génération** : hydraulicité, VCN3 / périodes de
+  retour, les deux, Météo France, ONDE, stations et sites.
+- Configurer **tous les paramètres du mode CLI** (dates, réseau SANDRE, échelle
+  géographique, code de zone, agrégation, graphiques, mise à jour des données).
+- **Suivre les logs en temps réel** et l'état des jobs (en cours / terminé /
+  échec / annulé), et **annuler** un job en cours.
+
+#### Installation et lancement
+
+```bash
+# 1. Installer les dépendances (requirements.txt inclut celles de la WebUI)
+.\venv\Scripts\pip.exe install -r requirements.txt
+
+# 2. Lancer la WebUI (depuis le dossier du programme)
+.\venv\Scripts\python.exe -m webui.app
+```
+
+Puis ouvrez **http://127.0.0.1:8000** dans votre navigateur.
+
+> Des scripts de lancement sont fournis : `run_webui.bat` (Windows) et
+> `run_webui.sh` (Linux/macOS).
+>
+> **Documentation complète** de la WebUI — fonctionnalités, paramètres,
+> architecture, compréhension du code et API — dans
+> [`webui/README.md`](webui/README.md).
+
+---
+
 ## 🗂️ Fichiers de Configuration et Données Personnalisées
 
 ### Utiliser vos propres listes de stations/sites
