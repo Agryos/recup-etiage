@@ -1,4 +1,0 @@
-# Dépendances supplémentaires pour la WebUI (en plus de requirements.txt).
-# Installation : pip install -r requirements-webui.txt
-fastapi>=0.110
-uvicorn[standard]>=0.29

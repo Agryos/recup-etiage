@@ -144,14 +144,15 @@ pending ──▶ running ──▶ completed
 
 ## Installation
 
-La WebUI s'appuie sur les dépendances du projet. Ajoutez les dépendances web :
+La WebUI s'appuie sur les dépendances du projet, déjà incluses dans
+`requirements.txt` (`fastapi`, `uvicorn`). Installez-les normalement :
 
 ```bash
 # Linux / macOS
-pip install -r requirements-webui.txt
+pip install -r requirements.txt
 
 # Windows (venv)
-.\venv\Scripts\pip.exe install -r requirements-webui.txt
+.\venv\Scripts\pip.exe install -r requirements.txt
 ```
 
 ## Lancement

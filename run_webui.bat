@@ -3,7 +3,7 @@ rem Lance la WebUI de Recup-Etiage.
 rem Usage : double-cliquer sur run_webui.bat
 rem
 rem Pre-requis : le venv doit etre cree et les dependances installees
-rem (voir install.bat + requirements-webui.txt).
+rem (voir install.bat + requirements.txt).
 
 cd /d "%~dp0"
 

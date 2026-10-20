@@ -3,7 +3,7 @@
 # Usage : ./run_webui.sh
 #
 # Prérequis : le venv doit être créé et les dépendances installées
-# (voir install.sh + requirements-webui.txt).
+# (voir install.sh + requirements.txt).
 
 set -e
 

@@ -272,8 +272,8 @@ de chaque job est suivi.
 #### Installation et lancement
 
 ```bash
-# 1. Installer les dépendances web (en plus de requirements.txt)
-.\venv\Scripts\pip.exe install -r requirements-webui.txt
+# 1. Installer les dépendances (requirements.txt inclut celles de la WebUI)
+.\venv\Scripts\pip.exe install -r requirements.txt
 
 # 2. Lancer la WebUI (depuis le dossier du programme)
 .\venv\Scripts\python.exe -m webui.app
