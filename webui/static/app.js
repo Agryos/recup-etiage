@@ -60,6 +60,7 @@ function renderDynamicFields() {
             adaptMeteoDates();
         }
     }
+    updatePreview();
 }
 
 function renderField(field) {
@@ -96,6 +97,9 @@ function renderField(field) {
         input.value = field.default || '';
         if (field.placeholder) input.placeholder = field.placeholder;
     }
+
+    input.addEventListener('change', schedulePreview);
+    input.addEventListener('input', schedulePreview);
 
     div.appendChild(label);
     div.appendChild(input);
@@ -134,14 +138,7 @@ function setupForm() {
 
 async function onLaunch(e) {
     e.preventDefault();
-    const typeKey = $('type').value;
-    const type = state.types[typeKey];
-    const params = {};
-    for (const field of type.fields) {
-        const el = $(field.name);
-        if (!el) continue;
-        params[field.name] = field.type === 'checkbox' ? el.checked : el.value;
-    }
+    const { type: typeKey, params } = collectParams();
 
     const btn = $('launch-btn');
     btn.disabled = true;
@@ -164,6 +161,52 @@ async function onLaunch(e) {
         alert('Erreur réseau : ' + err.message);
     } finally {
         btn.disabled = false;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Aperçu de la commande (temps réel)
+// ---------------------------------------------------------------------------
+
+function collectParams() {
+    const typeKey = $('type').value;
+    const type = state.types[typeKey];
+    const params = {};
+    for (const field of type.fields) {
+        const el = $(field.name);
+        if (!el) continue;
+        params[field.name] = field.type === 'checkbox' ? el.checked : el.value;
+    }
+    return { type: typeKey, params };
+}
+
+let previewTimer = null;
+function schedulePreview() {
+    if (previewTimer) clearTimeout(previewTimer);
+    previewTimer = setTimeout(updatePreview, 200);
+}
+
+async function updatePreview() {
+    const box = $('command-preview');
+    if (!box) return;
+    const { type, params } = collectParams();
+    try {
+        const res = await fetch('/api/preview', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type, params }),
+        });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            box.innerHTML = `<span class="preview-error">${escapeHtml(err.detail || 'Paramètres incomplets')}</span>`;
+            return;
+        }
+        const data = await res.json();
+        box.innerHTML = data.commands
+            .map((c) => `<div class="preview-cmd"><span class="prompt">$</span>${escapeHtml(c)}</div>`)
+            .join('');
+    } catch (err) {
+        box.innerHTML = '<span class="preview-error">Aperçu indisponible</span>';
     }
 }
 

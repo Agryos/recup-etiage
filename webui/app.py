@@ -69,6 +69,24 @@ async def get_types():
     return build_types_schema()
 
 
+@app.post("/api/preview")
+async def preview_command(req: JobRequest):
+    """Retourne la commande CLI qui serait exécutée, sans lancer de job.
+
+    Sert l'aperçu temps réel du frontend : la commande est construite par
+    ``build_commands`` (source de vérité), donc strictement identique à celle
+    d'un job réellement lancé.
+    """
+    schema = build_types_schema()
+    if req.type not in schema:
+        raise HTTPException(status_code=400, detail=f"Type inconnu : {req.type}")
+    try:
+        commands = build_commands(req.type, req.params)
+    except (KeyError, ValueError) as exc:
+        raise HTTPException(status_code=400, detail=f"Paramètres invalides : {exc}")
+    return {"commands": [" ".join(c) for c in commands]}
+
+
 # ----------------------------------------------------------------------------
 # Jobs
 # ----------------------------------------------------------------------------

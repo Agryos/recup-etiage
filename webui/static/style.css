@@ -145,6 +145,47 @@ body {
     margin-top: 20px;
 }
 
+/* Command preview (aperçu temps réel de la commande CLI) */
+.command-preview-wrap {
+    margin-top: 20px;
+}
+
+.preview-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.command-preview {
+    background: #0a0e12;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 12px 14px;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    min-height: 44px;
+    color: #c9d4de;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.command-preview .preview-cmd {
+    margin-bottom: 4px;
+}
+
+.command-preview .prompt {
+    color: var(--success);
+    margin-right: 7px;
+}
+
+.command-preview .preview-error {
+    color: var(--warning);
+}
+
 button {
     font-family: inherit;
     font-size: 0.9rem;
