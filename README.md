@@ -257,8 +257,17 @@ Un script d'exemple se situe dans `script/example_cli.bat`. Vous pouvez créer u
 
 Une interface web permet de lancer les mêmes générations depuis un navigateur,
 avec les mêmes fonctionnalités que le mode interactif et le mode CLI. Chaque
-génération s'exécute en arrière-plan, les logs s'affichent en direct et les
-résultats sont navigables depuis la page.
+génération s'exécute en arrière-plan, les logs s'affichent en direct et l'état
+de chaque job est suivi.
+
+#### Ce que ça permet
+
+- Lancer les **6 types de génération** : hydraulicité, VCN3 / périodes de
+  retour, les deux, Météo France, ONDE, stations et sites.
+- Configurer **tous les paramètres du mode CLI** (dates, réseau SANDRE, échelle
+  géographique, code de zone, agrégation, graphiques, mise à jour des données).
+- **Suivre les logs en temps réel** et l'état des jobs (en cours / terminé /
+  échec / annulé), et **annuler** un job en cours.
 
 #### Installation et lancement
 
@@ -273,8 +282,11 @@ résultats sont navigables depuis la page.
 Puis ouvrez **http://127.0.0.1:8000** dans votre navigateur.
 
 > Des scripts de lancement sont fournis : `run_webui.bat` (Windows) et
-> `run_webui.sh` (Linux/macOS). La documentation complète de la WebUI se trouve
-> dans [`webui/README.md`](webui/README.md).
+> `run_webui.sh` (Linux/macOS).
+>
+> **Documentation complète** de la WebUI — fonctionnalités, paramètres,
+> architecture, compréhension du code et API — dans
+> [`webui/README.md`](webui/README.md).
 
 ---
 
